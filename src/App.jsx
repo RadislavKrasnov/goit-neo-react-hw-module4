@@ -4,10 +4,10 @@ import { fetchImages } from './api/unsplashApi';
 import { Toaster } from 'react-hot-toast';
 import SearchBar from './components/SearchBar/SearchBar';
 import ImageGallery from './components/ImageGallery/ImageGallery';
-import { BeatLoader } from 'react-spinners';
 import ErrorMessage from './components/ErrorMessage/ErrorMessage';
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
 import ImageModal from './components/ImageModal/ImageModal';
+import Loader from './components/Loader/Loader';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -31,6 +31,10 @@ function App() {
   }, [query, page]);
 
   const handleSearchSubmit = newQuery => {
+    if (query === newQuery) {
+        return;
+    }
+    
     setQuery(newQuery);
     setPage(1);
     setImages([]);
@@ -42,7 +46,7 @@ function App() {
       <SearchBar onSubmit={handleSearchSubmit} />
       {error && <ErrorMessage message={error} />}
       <ImageGallery images={images} onClick={setSelectedImage} />
-      {loading && <BeatLoader color="#150f94" />}
+      {loading && <Loader />}
       {images.length > 0 && page < totalPages && !loading && (
         <LoadMoreBtn onClick={() => setPage(prevPage => prevPage + 1)} />
       )}
