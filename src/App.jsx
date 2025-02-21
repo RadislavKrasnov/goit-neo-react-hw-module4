@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { fetchImages } from './api/unsplashApi';
+import { Toaster } from 'react-hot-toast';
+import SearchBar from './components/SearchBar/SearchBar';
+import ImageGallery from './components/ImageGallery/ImageGallery';
+import { BeatLoader } from 'react-spinners';
+import ErrorMessage from './components/ErrorMessage/ErrorMessage';
+import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
+import ImageModal from './components/ImageModal/ImageModal';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [images, setImages] = useState([]);
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    if (!query) return;
+    fetchImages({
+      query,
+      page,
+      setImages,
+      setTotalPages,
+      setLoading,
+      setError,
+    });
+  }, [query, page]);
+
+  const handleSearchSubmit = newQuery => {
+    setQuery(newQuery);
+    setPage(1);
+    setImages([]);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div>
+      <Toaster position="top-center" />
+      <SearchBar onSubmit={handleSearchSubmit} />
+      {error && <ErrorMessage message={error} />}
+      <ImageGallery images={images} onClick={setSelectedImage} />
+      {loading && <BeatLoader color="#150f94" />}
+      {images.length > 0 && page < totalPages && !loading && (
+        <LoadMoreBtn onClick={() => setPage(prevPage => prevPage + 1)} />
+      )}
+      <ImageModal
+        image={selectedImage}
+        onClose={() => setSelectedImage(null)}
+      />
+    </div>
+  );
 }
 
-export default App
+export default App;
