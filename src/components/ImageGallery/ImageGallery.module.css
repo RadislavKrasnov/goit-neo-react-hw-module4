@@ -1,0 +1,21 @@
+.gallery {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px;
+  align-items: center;
+  padding: 0;
+  margin: 16px auto;
+  width: 90%;
+}
+
+.item {
+  cursor: pointer;
+  width: 400px;
+  height: 300px;
+}
+
+.item:hover {
+  box-shadow: inset 0px 4px 18px 3px rgba(189, 191, 227, 1);
+}

@@ -8,6 +8,7 @@ import ErrorMessage from './components/ErrorMessage/ErrorMessage';
 import LoadMoreBtn from './components/LoadMoreBtn/LoadMoreBtn';
 import ImageModal from './components/ImageModal/ImageModal';
 import Loader from './components/Loader/Loader';
+import css from './App.module.css';
 
 function App() {
   const [loading, setLoading] = useState(false);
@@ -41,7 +42,7 @@ function App() {
   };
 
   return (
-    <div>
+    <div className={css.container}>
       <Toaster position="top-center" />
       <SearchBar onSubmit={handleSearchSubmit} />
       {error && <ErrorMessage message={error} />}
